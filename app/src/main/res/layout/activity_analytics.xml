@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F9F9F9">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Card 1: Sessions -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="16dp"
+                app:strokeColor="?attr/colorOutline"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <!-- Left section: Text info -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvTotalSessions"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total sessions today: 120"
+                            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                            android:textColor="#000000" />
+
+                        <TextView
+                            android:id="@+id/tvPeak"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Peak demand: 5–7 pm"
+                            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+
+                    <!-- Right section: Progress circle -->
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:id="@+id/piUtil"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginStart="12dp"
+                        app:indicatorSize="64dp"
+                        app:trackThickness="8dp"
+                        app:indicatorDirectionCircular="clockwise" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card 2: Last 24h Usage -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.3"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="16dp"
+                app:strokeColor="?attr/colorOutline"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Last 24h Usage"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                        android:textColor="#000000" />
+
+                    <LinearLayout
+                        android:id="@+id/barHost"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp"
+                        android:gravity="bottom"
+                        android:baselineAligned="false" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card 3: Total Energy Saved -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.8"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="16dp"
+                app:strokeColor="?attr/colorOutline"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Energy Saved"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                        android:textColor="#000000" />
+
+                    <TextView
+                        android:id="@+id/tvEnergySaved"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="256 kWh saved this week"
+                        android:textColor="#388E3C"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        android:layout_marginTop="8dp" />
+
+                    <ProgressBar
+                        android:id="@+id/progressEnergy"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_marginTop="8dp"
+                        android:progress="60"
+                        android:progressTint="#4CAF50"
+                        android:backgroundTint="#E0E0E0" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card 4: Carbon Offset -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.8"
+                app:cardCornerRadius="16dp"
+                app:strokeColor="?attr/colorOutline"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Carbon Offset"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                        android:textColor="#000000" />
+
+                    <TextView
+                        android:id="@+id/tvCarbon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="~12.4 kg CO₂ saved"
+                        android:textColor="#388E3C"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

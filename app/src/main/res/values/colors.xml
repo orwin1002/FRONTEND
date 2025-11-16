@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light palette -->
+    <color name="green_primary">#2E7D32</color>
+    <color name="green_on_primary">#FFFFFF</color>
+    <color name="green_primary_container">#A5D6A7</color>
+    <color name="green_on_primary_container">#0A200C</color>
+
+    <color name="green_secondary">#43A047</color>
+    <color name="green_on_secondary">#FFFFFF</color>
+    <color name="green_secondary_container">#C8E6C9</color>
+    <color name="green_on_secondary_container">#0E2511</color>
+
+    <color name="m3_surface">#FFFBFE</color>
+    <color name="m3_on_surface">#1A1C19</color>
+    <color name="m3_surface_variant">#E1E3DE</color>
+    <color name="m3_on_surface_variant">#44483D</color>
+    <color name="m3_outline">#8E9288</color>
+    <color name="green_600">#43A047</color>
+    <color name="red_600">#AB0B1B</color>
+    <color name="teal_700">#3C713E</color>
+</resources>

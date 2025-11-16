@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.EVMate" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#8AD38C</item>
+        <item name="colorOnPrimary">#003910</item>
+        <item name="colorPrimaryContainer">#1B5E20</item>
+        <item name="colorOnPrimaryContainer">#CDECCF</item>
+
+        <item name="colorSecondary">#7DD48A</item>
+        <item name="colorOnSecondary">#003912</item>
+        <item name="colorSecondaryContainer">#1E6B27</item>
+        <item name="colorOnSecondaryContainer">#CFEFD5</item>
+
+        <item name="colorSurface">#111312</item>
+        <item name="colorOnSurface">#E2E3DE</item>
+        <item name="colorSurfaceVariant">#43483E</item>
+        <item name="colorOnSurfaceVariant">#C4C8BC</item>
+        <item name="colorOutline">#8E9288</item>
+    </style>
+</resources>

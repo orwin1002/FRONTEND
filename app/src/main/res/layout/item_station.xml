@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardUseCompatPadding="true"
+    app:cardElevation="3dp"
+    app:strokeColor="?attr/colorOutline"
+    app:strokeWidth="1dp"
+    app:cardCornerRadius="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Top row: emoji + name/address + favorite -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvEnergy"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_energy_circle"
+                android:gravity="center"
+                android:textSize="22sp"
+                android:contentDescription="@string/cd_energy_type"
+                tools:text="☀️" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tvName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                        android:textColor="?attr/colorOnSurface"
+                        tools:text="Sunrise Solar Station" />
+
+                    <!-- Green score badge -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipScore"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Green 86"
+                        app:chipBackgroundColor="?attr/colorSecondaryContainer"
+                        app:chipIconTint="?attr/colorPrimary"
+                        app:chipStartPadding="8dp"
+                        app:textStartPadding="4dp"
+                        app:textEndPadding="8dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    tools:text="123 Solar Ave" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnFavorite"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/cd_favorite"
+                app:tint="?attr/colorPrimary"
+                app:srcCompat="@drawable/ic_favorite_border_24" />
+        </LinearLayout>
+
+        <!-- Perks -->
+        <LinearLayout
+            android:id="@+id/perksRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:gravity="start">
+
+            <TextView
+                android:id="@+id/perkParking"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🅿️"
+                android:textSize="18sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/perkCafe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🧋"
+                android:textSize="18sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/perkService"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🛠️"
+                android:textSize="18sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/perkRestroom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🧼"
+                android:textSize="18sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- CO2 savings -->
+        <TextView
+            android:id="@+id/tvCo2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="~2.4 kg CO₂ saved vs grid"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+        <!-- Expandable map preview -->
+        <ImageView
+            android:id="@+id/ivMapPreview"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="8dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/bg_map_preview"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

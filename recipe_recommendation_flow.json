@@ -1,0 +1,866 @@
+{
+  "name": "Recipe Recommendation Flow",
+  "description": "A Langflow workflow that takes ingredients as input and returns recipes with missing ingredients listed",
+  "data": {
+    "nodes": [
+      {
+        "id": "user_input_node",
+        "type": "genericNode",
+        "position": {
+          "x": 100,
+          "y": 300
+        },
+        "data": {
+          "type": "ChatInput",
+          "node": {
+            "template": {
+              "input_value": {
+                "type": "str",
+                "required": true,
+                "placeholder": "Enter your ingredients (e.g., chicken, tomatoes, onions, garlic)",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "",
+                "name": "input_value",
+                "display_name": "Ingredients",
+                "advanced": false
+              },
+              "allergens": {
+                "type": "str",
+                "required": false,
+                "placeholder": "Enter any allergens to avoid (optional, e.g., nuts, dairy)",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "",
+                "name": "allergens",
+                "display_name": "Allergens to Avoid",
+                "advanced": false
+              }
+            },
+            "description": "User input for ingredients and allergens",
+            "base_classes": ["str"],
+            "display_name": "User Input",
+            "custom_fields": {},
+            "output_types": ["str"],
+            "documentation": ""
+          }
+        }
+      },
+      {
+        "id": "llm_ingredient_parser_node",
+        "type": "genericNode",
+        "position": {
+          "x": 400,
+          "y": 300
+        },
+        "data": {
+          "type": "OpenAIModel",
+          "node": {
+            "template": {
+              "model_name": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": true,
+                "show": true,
+                "multiline": false,
+                "value": "gpt-3.5-turbo",
+                "options": [
+                  "gpt-3.5-turbo",
+                  "gpt-4",
+                  "gpt-4-turbo-preview",
+                  "gpt-4o",
+                  "gpt-4o-mini"
+                ],
+                "name": "model_name",
+                "display_name": "Model Name",
+                "advanced": false
+              },
+              "temperature": {
+                "type": "float",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": 0.1,
+                "name": "temperature",
+                "display_name": "Temperature",
+                "advanced": false
+              },
+              "max_tokens": {
+                "type": "int",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": 500,
+                "name": "max_tokens",
+                "display_name": "Max Tokens",
+                "advanced": false
+              },
+              "system_message": {
+                "type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "You are a helpful assistant that extracts and standardizes ingredient names from user input. Return a clean, comma-separated list of standardized ingredient names.",
+                "name": "system_message",
+                "display_name": "System Message",
+                "advanced": false
+              },
+              "input_value": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "Extract and standardize the following ingredients: {user_input}\n\nReturn only a comma-separated list of standardized ingredient names.",
+                "name": "input_value",
+                "display_name": "Input",
+                "advanced": false
+              },
+              "openai_api_key": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "password": true,
+                "multiline": false,
+                "value": "",
+                "name": "openai_api_key",
+                "display_name": "OpenAI API Key",
+                "advanced": false
+              }
+            },
+            "description": "LLM node for parsing and standardizing ingredients",
+            "base_classes": ["LanguageModel", "BaseLanguageModel"],
+            "display_name": "LLM Ingredient Parser",
+            "custom_fields": {},
+            "output_types": ["LanguageModel"],
+            "documentation": ""
+          }
+        }
+      },
+      {
+        "id": "embedding_retriever_node",
+        "type": "genericNode",
+        "position": {
+          "x": 700,
+          "y": 300
+        },
+        "data": {
+          "type": "VectorStoreAgent",
+          "node": {
+            "template": {
+              "vector_store": {
+                "type": "VectorStore",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": null,
+                "name": "vector_store",
+                "display_name": "Vector Store",
+                "advanced": false
+              },
+              "input_value": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "{parsed_ingredients}",
+                "name": "input_value",
+                "display_name": "Query",
+                "advanced": false
+              },
+              "search_kwargs": {
+                "type": "dict",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "{\"k\": 5}",
+                "name": "search_kwargs",
+                "display_name": "Search Kwargs",
+                "advanced": false
+              }
+            },
+            "description": "Retrieves recipes based on ingredient embeddings",
+            "base_classes": ["Agent"],
+            "display_name": "Embedding Retriever",
+            "custom_fields": {},
+            "output_types": ["Agent"],
+            "documentation": ""
+          }
+        }
+      },
+      {
+        "id": "vector_store_loader",
+        "type": "genericNode",
+        "position": {
+          "x": 700,
+          "y": 100
+        },
+        "data": {
+          "type": "Chroma",
+          "node": {
+            "template": {
+              "persist_directory": {
+                "type": "str",
+                "required": false,
+                "placeholder": "./chroma_db",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "./chroma_db",
+                "name": "persist_directory",
+                "display_name": "Persist Directory",
+                "advanced": false
+              },
+              "collection_name": {
+                "type": "str",
+                "required": false,
+                "placeholder": "recipes",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "recipes",
+                "name": "collection_name",
+                "display_name": "Collection Name",
+                "advanced": false
+              },
+              "embedding": {
+                "type": "Embeddings",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": null,
+                "name": "embedding",
+                "display_name": "Embedding",
+                "advanced": false
+              }
+            },
+            "description": "Vector store for recipe embeddings",
+            "base_classes": ["VectorStore"],
+            "display_name": "Chroma Vector Store",
+            "custom_fields": {},
+            "output_types": ["VectorStore"],
+            "documentation": ""
+          }
+        }
+      },
+      {
+        "id": "embedding_model",
+        "type": "genericNode",
+        "position": {
+          "x": 700,
+          "y": 500
+        },
+        "data": {
+          "type": "OpenAIEmbeddings",
+          "node": {
+            "template": {
+              "openai_api_key": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "password": true,
+                "multiline": false,
+                "value": "",
+                "name": "openai_api_key",
+                "display_name": "OpenAI API Key",
+                "advanced": false
+              },
+              "model": {
+                "type": "str",
+                "required": false,
+                "placeholder": "text-embedding-ada-002",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "text-embedding-ada-002",
+                "name": "model",
+                "display_name": "Model",
+                "advanced": false
+              }
+            },
+            "description": "OpenAI embedding model",
+            "base_classes": ["Embeddings"],
+            "display_name": "OpenAI Embeddings",
+            "custom_fields": {},
+            "output_types": ["Embeddings"],
+            "documentation": ""
+          }
+        }
+      },
+      {
+        "id": "llm_re_ranker_allergy_filter_node",
+        "type": "genericNode",
+        "position": {
+          "x": 1000,
+          "y": 300
+        },
+        "data": {
+          "type": "OpenAIModel",
+          "node": {
+            "template": {
+              "model_name": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": true,
+                "show": true,
+                "multiline": false,
+                "value": "gpt-3.5-turbo",
+                "options": [
+                  "gpt-3.5-turbo",
+                  "gpt-4",
+                  "gpt-4-turbo-preview",
+                  "gpt-4o",
+                  "gpt-4o-mini"
+                ],
+                "name": "model_name",
+                "display_name": "Model Name",
+                "advanced": false
+              },
+              "temperature": {
+                "type": "float",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": 0.3,
+                "name": "temperature",
+                "display_name": "Temperature",
+                "advanced": false
+              },
+              "max_tokens": {
+                "type": "int",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": 2000,
+                "name": "max_tokens",
+                "display_name": "Max Tokens",
+                "advanced": false
+              },
+              "system_message": {
+                "type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "You are a recipe ranking assistant. Analyze recipes and rank them by relevance to the provided ingredients. Also filter out any recipes containing specified allergens. Return the top recipe with a match score and list of missing ingredients.",
+                "name": "system_message",
+                "display_name": "System Message",
+                "advanced": false
+              },
+              "input_value": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "User ingredients: {parsed_ingredients}\n\nAllergens to avoid: {allergens}\n\nRetrieved recipes:\n{retrieved_recipes}\n\nRe-rank these recipes by relevance to the user's ingredients. For each recipe:\n1. Calculate a match score (0-100) based on how many user ingredients are present\n2. Filter out any recipes containing the specified allergens\n3. List missing ingredients for the top recipe\n4. Return the best matching recipe with its match score and missing ingredients list.",
+                "name": "input_value",
+                "display_name": "Input",
+                "advanced": false
+              },
+              "openai_api_key": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "password": true,
+                "multiline": false,
+                "value": "",
+                "name": "openai_api_key",
+                "display_name": "OpenAI API Key",
+                "advanced": false
+              }
+            },
+            "description": "LLM node for re-ranking recipes and filtering allergens",
+            "base_classes": ["LanguageModel", "BaseLanguageModel"],
+            "display_name": "LLM Re-Ranker + Allergy Filter",
+            "custom_fields": {},
+            "output_types": ["LanguageModel"],
+            "documentation": ""
+          }
+        }
+      },
+      {
+        "id": "router_node",
+        "type": "genericNode",
+        "position": {
+          "x": 1300,
+          "y": 300
+        },
+        "data": {
+          "type": "RouterComponent",
+          "node": {
+            "template": {
+              "input_value": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "{ranked_recipe}",
+                "name": "input_value",
+                "display_name": "Input",
+                "advanced": false
+              },
+              "condition": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "has_valid_recipe",
+                "name": "condition",
+                "display_name": "Condition",
+                "advanced": false
+              }
+            },
+            "description": "Routes to formatter if recipe found, otherwise to fallback generator",
+            "base_classes": ["str"],
+            "display_name": "Router",
+            "custom_fields": {},
+            "output_types": ["str"],
+            "documentation": ""
+          }
+        }
+      },
+      {
+        "id": "llm_fallback_recipe_generator_node",
+        "type": "genericNode",
+        "position": {
+          "x": 1300,
+          "y": 500
+        },
+        "data": {
+          "type": "OpenAIModel",
+          "node": {
+            "template": {
+              "model_name": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": true,
+                "show": true,
+                "multiline": false,
+                "value": "gpt-3.5-turbo",
+                "options": [
+                  "gpt-3.5-turbo",
+                  "gpt-4",
+                  "gpt-4-turbo-preview",
+                  "gpt-4o",
+                  "gpt-4o-mini"
+                ],
+                "name": "model_name",
+                "display_name": "Model Name",
+                "advanced": false
+              },
+              "temperature": {
+                "type": "float",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": 0.7,
+                "name": "temperature",
+                "display_name": "Temperature",
+                "advanced": false
+              },
+              "max_tokens": {
+                "type": "int",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": 2000,
+                "name": "max_tokens",
+                "display_name": "Max Tokens",
+                "advanced": false
+              },
+              "system_message": {
+                "type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "You are a creative chef assistant. Generate a complete recipe using only the provided ingredients. Include recipe name, ingredients list, step-by-step instructions, cooking time, and serving size.",
+                "name": "system_message",
+                "display_name": "System Message",
+                "advanced": false
+              },
+              "input_value": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "Generate a recipe using only these ingredients: {parsed_ingredients}\n\nAllergens to avoid: {allergens}\n\nCreate a complete recipe with:\n- Recipe name\n- Ingredients list (using only the provided ingredients)\n- Step-by-step instructions\n- Cooking time\n- Serving size\n- Any tips or variations",
+                "name": "input_value",
+                "display_name": "Input",
+                "advanced": false
+              },
+              "openai_api_key": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "password": true,
+                "multiline": false,
+                "value": "",
+                "name": "openai_api_key",
+                "display_name": "OpenAI API Key",
+                "advanced": false
+              }
+            },
+            "description": "LLM node for generating fallback recipes when no matches found",
+            "base_classes": ["LanguageModel", "BaseLanguageModel"],
+            "display_name": "LLM Fallback Recipe Generator",
+            "custom_fields": {},
+            "output_types": ["LanguageModel"],
+            "documentation": ""
+          }
+        }
+      },
+      {
+        "id": "final_formatter_node",
+        "type": "genericNode",
+        "position": {
+          "x": 1600,
+          "y": 300
+        },
+        "data": {
+          "type": "PromptTemplate",
+          "node": {
+            "template": {
+              "template": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "RECIPE RECOMMENDATION\n\n{recipe_output}\n\n---\n\nThis recipe has been selected based on your available ingredients. Enjoy cooking!",
+                "name": "template",
+                "display_name": "Template",
+                "advanced": false
+              },
+              "input_variables": {
+                "type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "recipe_output",
+                "name": "input_variables",
+                "display_name": "Input Variables",
+                "advanced": false
+              }
+            },
+            "description": "Formats the final recipe output for display",
+            "base_classes": ["StringPromptTemplate", "PromptTemplate"],
+            "display_name": "Final Formatter",
+            "custom_fields": {},
+            "output_types": ["StringPromptTemplate", "PromptTemplate"],
+            "documentation": ""
+          }
+        }
+      },
+      {
+        "id": "chat_output_node",
+        "type": "genericNode",
+        "position": {
+          "x": 1900,
+          "y": 300
+        },
+        "data": {
+          "type": "ChatOutput",
+          "node": {
+            "template": {
+              "input_value": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "{formatted_output}",
+                "name": "input_value",
+                "display_name": "Input",
+                "advanced": false
+              }
+            },
+            "description": "Output node for displaying the final recipe",
+            "base_classes": ["str"],
+            "display_name": "Chat Output",
+            "custom_fields": {},
+            "output_types": ["str"],
+            "documentation": ""
+          }
+        }
+      },
+      {
+        "id": "prompt_template_parser",
+        "type": "genericNode",
+        "position": {
+          "x": 400,
+          "y": 100
+        },
+        "data": {
+          "type": "PromptTemplate",
+          "node": {
+            "template": {
+              "template": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "{input_value}",
+                "name": "template",
+                "display_name": "Template",
+                "advanced": false
+              },
+              "input_variables": {
+                "type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "input_value",
+                "name": "input_variables",
+                "display_name": "Input Variables",
+                "advanced": false
+              }
+            },
+            "description": "Template for ingredient parser input",
+            "base_classes": ["StringPromptTemplate", "PromptTemplate"],
+            "display_name": "Prompt Template",
+            "custom_fields": {},
+            "output_types": ["StringPromptTemplate", "PromptTemplate"],
+            "documentation": ""
+          }
+        }
+      },
+      {
+        "id": "prompt_template_reranker",
+        "type": "genericNode",
+        "position": {
+          "x": 1000,
+          "y": 100
+        },
+        "data": {
+          "type": "PromptTemplate",
+          "node": {
+            "template": {
+              "template": {
+                "type": "str",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "User ingredients: {parsed_ingredients}\n\nAllergens to avoid: {allergens}\n\nRetrieved recipes:\n{retrieved_recipes}\n\nRe-rank these recipes by relevance to the user's ingredients. For each recipe:\n1. Calculate a match score (0-100) based on how many user ingredients are present\n2. Filter out any recipes containing the specified allergens\n3. List missing ingredients for the top recipe\n4. Return the best matching recipe with its match score and missing ingredients list.",
+                "name": "template",
+                "display_name": "Template",
+                "advanced": false
+              },
+              "input_variables": {
+                "type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "parsed_ingredients,allergens,retrieved_recipes",
+                "name": "input_variables",
+                "display_name": "Input Variables",
+                "advanced": false
+              }
+            },
+            "description": "Template for re-ranker input",
+            "base_classes": ["StringPromptTemplate", "PromptTemplate"],
+            "display_name": "Prompt Template",
+            "custom_fields": {},
+            "output_types": ["StringPromptTemplate", "PromptTemplate"],
+            "documentation": ""
+          }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "user_input_node",
+        "sourceHandle": "output",
+        "target": "prompt_template_parser",
+        "targetHandle": "input_value",
+        "type": "default",
+        "id": "edge-user_input_node-prompt_template_parser"
+      },
+      {
+        "source": "prompt_template_parser",
+        "sourceHandle": "output",
+        "target": "llm_ingredient_parser_node",
+        "targetHandle": "input_value",
+        "type": "default",
+        "id": "edge-prompt_template_parser-llm_ingredient_parser_node"
+      },
+      {
+        "source": "llm_ingredient_parser_node",
+        "sourceHandle": "output",
+        "target": "embedding_retriever_node",
+        "targetHandle": "input_value",
+        "type": "default",
+        "id": "edge-llm_ingredient_parser_node-embedding_retriever_node"
+      },
+      {
+        "source": "embedding_model",
+        "sourceHandle": "output",
+        "target": "vector_store_loader",
+        "targetHandle": "embedding",
+        "type": "default",
+        "id": "edge-embedding_model-vector_store_loader"
+      },
+      {
+        "source": "vector_store_loader",
+        "sourceHandle": "output",
+        "target": "embedding_retriever_node",
+        "targetHandle": "vector_store",
+        "type": "default",
+        "id": "edge-vector_store_loader-embedding_retriever_node"
+      },
+      {
+        "source": "embedding_retriever_node",
+        "sourceHandle": "output",
+        "target": "prompt_template_reranker",
+        "targetHandle": "retrieved_recipes",
+        "type": "default",
+        "id": "edge-embedding_retriever_node-prompt_template_reranker"
+      },
+      {
+        "source": "llm_ingredient_parser_node",
+        "sourceHandle": "output",
+        "target": "prompt_template_reranker",
+        "targetHandle": "parsed_ingredients",
+        "type": "default",
+        "id": "edge-llm_ingredient_parser_node-prompt_template_reranker"
+      },
+      {
+        "source": "user_input_node",
+        "sourceHandle": "allergens",
+        "target": "prompt_template_reranker",
+        "targetHandle": "allergens",
+        "type": "default",
+        "id": "edge-user_input_node-allergens-prompt_template_reranker"
+      },
+      {
+        "source": "prompt_template_reranker",
+        "sourceHandle": "output",
+        "target": "llm_re_ranker_allergy_filter_node",
+        "targetHandle": "input_value",
+        "type": "default",
+        "id": "edge-prompt_template_reranker-llm_re_ranker_allergy_filter_node"
+      },
+      {
+        "source": "llm_re_ranker_allergy_filter_node",
+        "sourceHandle": "output",
+        "target": "router_node",
+        "targetHandle": "input_value",
+        "type": "default",
+        "id": "edge-llm_re_ranker_allergy_filter_node-router_node"
+      },
+      {
+        "source": "router_node",
+        "sourceHandle": "true",
+        "target": "final_formatter_node",
+        "targetHandle": "recipe_output",
+        "type": "default",
+        "id": "edge-router_node-true-final_formatter_node"
+      },
+      {
+        "source": "router_node",
+        "sourceHandle": "false",
+        "target": "llm_fallback_recipe_generator_node",
+        "targetHandle": "input_value",
+        "type": "default",
+        "id": "edge-router_node-false-llm_fallback_recipe_generator_node"
+      },
+      {
+        "source": "llm_ingredient_parser_node",
+        "sourceHandle": "output",
+        "target": "llm_fallback_recipe_generator_node",
+        "targetHandle": "parsed_ingredients",
+        "type": "default",
+        "id": "edge-llm_ingredient_parser_node-llm_fallback_recipe_generator_node"
+      },
+      {
+        "source": "user_input_node",
+        "sourceHandle": "allergens",
+        "target": "llm_fallback_recipe_generator_node",
+        "targetHandle": "allergens",
+        "type": "default",
+        "id": "edge-user_input_node-allergens-llm_fallback_recipe_generator_node"
+      },
+      {
+        "source": "llm_fallback_recipe_generator_node",
+        "sourceHandle": "output",
+        "target": "final_formatter_node",
+        "targetHandle": "recipe_output",
+        "type": "default",
+        "id": "edge-llm_fallback_recipe_generator_node-final_formatter_node"
+      },
+      {
+        "source": "final_formatter_node",
+        "sourceHandle": "output",
+        "target": "chat_output_node",
+        "targetHandle": "input_value",
+        "type": "default",
+        "id": "edge-final_formatter_node-chat_output_node"
+      }
+    ],
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    }
+  },
+  "is_component": false
+}
+

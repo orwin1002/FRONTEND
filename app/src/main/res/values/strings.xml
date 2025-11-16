@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EVMate</string>
+    <!-- Onboarding -->
+    <string name="ob_title">Welcome to EVMate</string>
+    <string name="ob_sub">A one‑stop solution for finding and booking charging locations</string>
+    <string name="ob_get_started">Get Started</string>
+
+    <!-- Auth -->
+    <string name="auth_hi">Hey There,</string>
+    <string name="signup_title">Create an Account</string>
+    <string name="login_title">Welcome back</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="dont_have_account">Don’t have an account yet?</string>
+    <string name="signup">Register</string>
+    <string name="go_to_login">Login</string>
+    <string name="forgot_password">Forgot your password?</string>
+
+    <!-- Dashboard -->
+    <string name="welcome_back">Welcome Back,</string>
+    <string name="sample_user">Sandhya G</string>
+    <string name="search_station">Search charging station</string>
+    <string name="nearby_stations">Find Your Station</string>
+    <string name="scan">Scan</string>
+
+
+    <string name="hint_search">Search stations...</string>
+    <string name="chip_green_only">Show only green</string>
+    <string name="map_label">Map</string>
+    <string name="cd_open_map">Open map</string>
+    <string name="cd_favorite">Favorite</string>
+    <string name="cd_energy_type">Energy type</string>
+</resources>
